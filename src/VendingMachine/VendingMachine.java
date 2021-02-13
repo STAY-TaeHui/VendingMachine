@@ -12,9 +12,8 @@ public class VendingMachine {
     Scanner sc ;
     Money_Manage moneyManage;
     Product_Manage productManage;
-    int coin_choice=0; //기계에 투입된 금액
-    int currentmoney=0;
-
+    private int coin_choice; //기계에 투입된 금액
+    private int currentmoney;
 
     VendingMachine(){
         sc= new Scanner(System.in);
@@ -56,7 +55,11 @@ public class VendingMachine {
         switch (menu){
             case SELECT_DRINK:{
                 //여기서 음료 배열 출력
+                productManage.printName();
                 insertCoin();
+                //반환
+                choiceDrink();
+
                 break;
             }
             case MANAGER_LOGIN:{
@@ -65,7 +68,13 @@ public class VendingMachine {
             }
         }
     }
-    void insertCoin(){
+
+    private void choiceDrink() {
+        System.out.println("음료의 번호를 입력해주세요.");
+
+    }
+
+    private void insertCoin(){
         System.out.println("금액을 투입해주세요.\n[ 1. 100원   2. 500원   3. 1000원   4. 5000원]");
         System.out.println("금액 투입을 그만하려면 0을 눌러주세요.");
        loop: while(true) {
@@ -77,6 +86,10 @@ public class VendingMachine {
                 }
                 switch (coin_choice) {
                     case 0:{
+                        if(currentmoney<500){
+                            System.out.println("금액이 모자랍니다. 더 투입해주세요!!!");
+                            continue loop;
+                        }
                         System.out.println("금액 투입을 멈춥니다.");
                         System.out.printf("투입한 총 금액은 %d원 입니다.\n",currentmoney);
                         break loop;
@@ -104,12 +117,14 @@ public class VendingMachine {
                 }
                 System.out.printf("현재 투입한 금액은 : %d원 입니다.\n", currentmoney);
 
+
             } catch (InputMismatchException e) {
                 System.out.println("원인 : " + e.toString());
                 System.out.println("올바른 값을 입력해주세요.");
             }
         }
     }
+
 }
 
 class Money_Manage{
@@ -144,9 +159,46 @@ class Money_Manage{
                 ,count_100*HUNDRED + count_500*FHUNDRED + count_1000*THOUSAND + count_5000*FTHOUSAND
                 );
     }
-
 }
 class Product_Manage{
+    private Drink[][] drinks;
+    Product_Manage(){
+         drinks = new Drink[4][4];
+        for(int i=0; i<drinks.length; i++){
+            for(int j=0; j<drinks[i].length; j++){
+                switch (i){
+                    case 0:{
+                        drinks[i][j] = new Soda(2000,10);
+                        break;
+                    }
+                    case 1:{
+                        drinks[i][j] = new Ion(1500,10);
+                        break;
+
+                    }case 2:{
+                        drinks[i][j] = new Water(1000,10);
+                        break;
+
+                    }case 3: {
+                        drinks[i][j] = new Coffee(500, 10);
+                        break;
+                    }
+                }
+
+            }
+        }
+
+    }
+    void printName(){
+        for(Drink[] d : drinks){
+            for(Drink drink : d){
+                System.out.print(drink.name());
+            }
+            System.out.println();
+        }
+
+    }
+
 
 }
 class User{
